@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SocketIO chat</title>
+    <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+    <ul id="messages"></ul>
+    <form action="">
+        <input id="id" autocomplete="off" value="id 입력하세요."/>
+        <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script>
+        var socket=io();
+        $('form').submit(function() {
+            socket.emit('chat message', {id:$('#id').val(), msg:$('#m').val()});
+            $('#m').val('');
+            return false;
+        });
+
+        socket.on('server message', function(msg) {
+           if(msg.id === $('#id').val()) {
+               console.log("right");
+               $('#messages').append($('<li style="text-align:right;">').text(msg.id + '>'+msg.msg));
+           } else {
+               console.log(msg.id + $('#id').val());
+               $('#messages').append($('<li>').text(msg.id + '>' + msg.msg));
+           }
+        });
+    </script>
+</body>
+</html>
